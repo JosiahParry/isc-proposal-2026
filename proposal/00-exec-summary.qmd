@@ -4,3 +4,23 @@
 This section provides a condensed view of the entire proposal, one page long.
 It should be a comprehensive high-level overview that captures the essence of the proposal, including its goals, methods, expected outcomes, deliverables, and budget.
 -->
+
+This proposal is for $5,000 USD to fund the completion of a new R package, {geoarrowrs}.
+
+https://github.com/JosiahParry/sfconversions
+https://github.com/JosiahParry/rsgeo
+https://github.com/extendr/arrow-extendr
+https://github.com/JosiahParry/geoarrowrs/
+
+The `{geoarrow}` R package provides only an R-native representation of geoarrow and integrates with the {arrow} R package
+
+`{geoarrowrs}` provides bindings to the geoarrow-rust library
+
+R bindings to the geoarrow-rust library: https://geoarrow.org/geoarrow-rs/
+
+with custom bindings to the geo rust crate for high performace computation
+https://github.com/georust/geo
+
+Milestones:
+
+- CRAN submissions and release

@@ -21,4 +21,25 @@ It is important to cover:
 -->
 ```
 
-An example in-text citation [@wickham2016].
+
+- The data science ecosystem has been moving steadily towards using Apache Arrow (Arrow), a standard for in memory representation of arrays and tables.
+- The spatial data science ecosystem is no different, and is moving faster than other parts of the data science ecosystem in its adoption of Arrow and GeoArrow.
+- Standardizing on Arrow as a format simplifies the data transfer between processes allowing tools to avoid expensive serializtion and deserialization steps to convert one in memory representation to another
+- GeoArrow is an extension of the Arrow standard that defines how spatial data can be represented in memory to be compatible with Arrow.
+- The most utilized spatial library in the world, GDAL, has begun supporting GeoArrow and Arrow
+- Python's ubiquitous pandas library has adopted Arrow and the spatial extension, geopandas, too, has begun adopting GeoArrow
+- R's support of geoarrow is limited.
+- Notably, the geoarrow R package provides an R-native representation of GeoArrow arrays that is compatible with standard data.frames, {arrow} R package, and {nanoarrow}.
+- Recent ISC funded work has also focused on GeoArrow too improved this via https://github.com/r-spatial/geoarrowWidget which supports sending geoarrow across the wire from R into the browser.
+
+
+- However, there remains no native GeoArrow computation engine.
+- Spatial data scientists in R still utilize {sf} which, unfortunately, does not scale sufficiently.
+ - In part, because geometries are stored as R list objets and converted to and from GEOS and S2 geometries whenever calculations occur.
+- There has been recent developments in the spatial ecosystem such as {duckspatial} and {sedonadb}
+- However, neither of these libraries work with native R data.frames
+{duckspatial} requires installing an external duckdb spatial extension which is 57mb on a MBP M5
+{sedonadb} is not published on CRAN
+{geoarrowrs} is completely dependency free, a 14mb installation, and is targeting full coverage of
+
+We need highly performant in-memory spatial operations

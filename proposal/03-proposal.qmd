@@ -7,6 +7,19 @@ how will you recover from them?
 This is where the proposal should be outlined.
 -->
 
+This proposal is to fund the completion of the R package, {geoarrowrs}, which is a geoarrow-native compute engine for the R ecosystem.
+
+The R package will provide memory efficient and parallelized implementation for geometric operations out of the box.
+In addition, it will provide advanced spatial join and query operations.
+The R package will integrate into the existing ecosystem with a focus on integration with {arrow}, {dplyr}, and {sf} to minimize friction in adoption.
+
+This proposal is for work in the following
+
+1. Core geometry algorithm implementation
+2. Parallelization and
+3. {sf} integration
+
+
 ## Overview
 <!--
 At a high-level address what your proposal is and how it will address
@@ -17,6 +30,30 @@ section.
 Include concrete actions you will take and estimated timeline.
 -->
 
+"sf is slow"
+https://stackoverflow.com/questions/78009568/slow-performance-on-r-spatial-distance-calculation
+https://jacobbradt.com/blog/2022/spatialbatch/
+https://www.researchgate.net/post/How_to_speed_up_spatial_operations_with_R_sf_package
+improvements via https://github.com/r-spatial/sf/issues/1925
+
+geos has historically been the fastest R package in the ecosystem https://dewey.dunnington.ca/post/2022/geos-version-0.2/ but was very low level and not widely used
+geoarrow became a standard in 2023 and its first major spec announced in 2025 https://geoarrow.org/news/release-0-2.html
+
+This package aims to be faster than geos, competitive with duckspatial and sedonadb, and as ergonomic as {sf} (with a drop in replacement via `mask_sf()`)
+for **in memory** computation
+
+## Prior art
+
+based on years of work culminating to this point
+starting with rust bindings to the geo crate as an early rust based geometry computation engine
+
+https://github.com/JosiahParry/sfconversions
+https://github.com/JosiahParry/rsgeo
+https://github.com/JosiahParry/anime/
+
+
+
+
 ## Detail
 <!--
 Go into more detail about the specifics of the project and how it delivers
@@ -24,6 +61,36 @@ against the problem.
 
 Depending on project type the detail section should include:
 -->
+- Core R package:
+    - File readers:
+        - [flatgeobuf](https://crates.io/crates/flatgeobuf)
+        - [shapefile](https://crates.io/crates/shapefile)
+        - [geojson](https://crates.io/crates/geojson)
+    - Spatial Indexes:
+        - KD-tree
+        - RTree
+    - Spatial Sorting:
+        - Hilbert
+        - Sort-tile-recursive
+    - Spatial Joins
+        - All basic spatial predictates
+        - KNN join
+        - Distance Joins
+    - Full coverage of all geometric operations in georust/geo
+- {arrow} R package registered user defined functions
+- sf compatibility S3 method registration
+- CRS propagation?
+
+### Readers
+
+- provided by geoarrow for geosjons and flatgeobuf
+- shapefile needs manual im
+
+### Algorithm Implementation
+
+- Relying on geo for core geometric operation algorithms
+- Joins are hand crafted used both geo and geo-index for creating query trees
+
 
 ### Minimum Viable Product
 
@@ -37,6 +104,16 @@ What is the smallest thing you can build that delivers value to your users?
 What does the high-level architecture look like?
 -->
 
+- Rust based R package via [extendr](https://github.com/extendr/extendr)
+- Arrow FFI between R and Rust via [arrow-extendr](https://github.com/extendr/arrow-extendr)
+- Native algorithms using [geo](https://docs.rs/geo)
+- Spatial Indexing using geo-index
+- Readers and writer using:
+    - geozero https://docs.rs/crate/geozero/0.14.0
+    - geojson
+    - flatgeobuf
+- Parallelism via https://docs.rs/rayon
+
 ### Assumptions
 
 <!--
@@ -48,3 +125,8 @@ What assumptions are you making that, if proven false, would invalidate the proj
 <!--
 What external dependencies does the project have (e.g. libraries, services, other projects, etc.)?
 -->
+
+### Limitations
+
+- No CRS support at present—may be able to do this via {wk}
+- Limited spherical / geodesic support—true in duckspatial, too

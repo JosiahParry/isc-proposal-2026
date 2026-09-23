@@ -18,6 +18,10 @@ to the project. Include public artifacts such as code repositories to
 show their tack record.
 -->
 
+Josiah Parry is a Sr. Product Engineer in Spatial Statistics as Esri.
+This project is a culmination of years of work
+
+
 ## Contributors
 <!--
 Who are the people who have actively helped with this proposal but
@@ -29,4 +33,3 @@ won't necessarily be on the core project team later?
 Who has been given the opportunity to provide feedback on the
 proposal?
 -->
-

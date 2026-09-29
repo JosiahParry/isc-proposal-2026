@@ -30,18 +30,18 @@ The biggest challenge with {sf} is primarily the fact that geometries are stored
 
 GeoArrow as a standard exists to address exactly this problem. It has been a focus of [Spatial Data Science Across Languages](https://spatial-data-science.github.io/2024/) since its inception in 2024 and [again in 2025](https://spatial-data-science.github.io/2025/), and as a result we are seeing coordinated adoption across all languages. As an indicator of its importance, GDAL added a [column-oriented Arrow API](https://gdal.org/en/stable/development/rfc/rfc86_column_oriented_api.html). GeoPandas, too, added [native GeoArrow support](https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.to_arrow.html).
 
-At present, R support is limited. The R package {geoarrow} provides a {nanoarrow} and {arrow} compatible vector representation. The ISC-funded geoArrow widget package assists in transporting {geoarrow} vectors to the browser. However, the R community lacks a GeoArrow-native compute engine that can scale effectively.
+At present, R support is limited. The R package [{geoarrow}](https://github.com/geoarrow/geoarrow-r) provides a [{nanoarrow}](https://arrow.apache.org/nanoarrow/latest/r/) and [{arrow}](https://arrow.apache.org/docs/r/) compatible vector representation. The ISC-funded [{geoarrowWidget}](https://github.com/r-spatial/geoarrowWidget) package assists in transporting {geoarrow} vectors to the browser. However, the R community lacks a GeoArrow-native compute engine that can scale effectively.
 
 ## Alternative Computation Engines
 
-Currently, there are two primary options for scalable geospatial computation engines in R: 1) duckspatial and 2) sedonadb. Both of these face similar issues:
+[{geos}](https://dewey.dunnington.ca/post/2022/geos-version-0.2/) has historically been the fastest R package in the ecosystem but is very low level and thus not very widely used.
+
+Currently, there are two primary options for scalable geospatial computation engines in R: 1) [{duckspatial}](https://cran.r-project.org/package=duckspatial) and 2) [{sedonadb}](https://sedona.apache.org/sedonadb/latest/r/). Both of these face similar issues:
 neither work with native data.frames and both require external downloads. sedonda db especially challenged due to not being on cran
 
-The duckspatial R package uses the spatial extension to DuckDB. DuckDB relies on downloading and installing an extension. The size alone if reason for concern. Secondly, it requires static linking
+The duckspatial R package uses the [spatial extension](https://duckdb.org/docs/stable/core_extensions/spatial/overview) to DuckDB. DuckDB relies on downloading and installing an extension. The size alone if reason for concern. Secondly, it requires [static linking](https://github.com/OSGeo/gdal/issues/10887)
 
-https://github.com/OSGeo/gdal/issues/10887
-
-{sedonadb} provides bindings to Apache Sedona. The most fit for large scale analysis but is not available on CRAN and lacks sufficient documentaton as well as has a bespoke API.
+{sedonadb} provides bindings to [Apache Sedona](https://sedona.apache.org/). The most fit for large scale analysis but is not available on CRAN and lacks sufficient documentaton as well as has a bespoke API.
 The latter, while arguably the most scalable package, is not available on CRAN and lacks sufficient documentation leading to limited adoption
 
 ## GeoParquet

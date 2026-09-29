@@ -22,24 +22,53 @@ It is important to cover:
 ```
 
 
-- The data science ecosystem has been moving steadily towards using Apache Arrow (Arrow), a standard for in memory representation of arrays and tables.
-- The spatial data science ecosystem is no different, and is moving faster than other parts of the data science ecosystem in its adoption of Arrow and GeoArrow.
-- Standardizing on Arrow as a format simplifies the data transfer between processes allowing tools to avoid expensive serializtion and deserialization steps to convert one in memory representation to another
-- GeoArrow is an extension of the Arrow standard that defines how spatial data can be represented in memory to be compatible with Arrow.
-- The most utilized spatial library in the world, GDAL, has begun supporting GeoArrow and Arrow
-- Python's ubiquitous pandas library has adopted Arrow and the spatial extension, geopandas, too, has begun adopting GeoArrow
-- R's support of geoarrow is limited.
-- Notably, the geoarrow R package provides an R-native representation of GeoArrow arrays that is compatible with standard data.frames, {arrow} R package, and {nanoarrow}.
-- Recent ISC funded work has also focused on GeoArrow too improved this via https://github.com/r-spatial/geoarrowWidget which supports sending geoarrow across the wire from R into the browser.
+## The (de)serialization problem
+
+While {sf} is a foundational package for the R ecosystem, its performance has failed to scale effectively as the size of data that people commonly work with has grown. This is a common experience. Users [report slow distance calculations on modest data](https://stackoverflow.com/questions/78009568/slow-performance-on-r-spatial-distance-calculation), [write their own batching workarounds to finish jobs at all](https://jacobbradt.com/blog/2022/spatialbatch/), and [performance](https://github.com/r-spatial/sf/issues/1925) remains an open topic in {sf}'s own issue tracker.
+
+The biggest challenge with {sf} is primarily the fact that geometries are stored in R as a list. Each operation that {sf} performs has to be first converted to a GEOS or S2 geometry. The S2 or GEOS libraries perform operations on their native geometries and then {sf} captures their results and again converts them back to their R representation. This limitation has led GDAL to create a GeoArrow native "column-oriented" reader which uses Apache Arrow natively to improve performance. This process of converting to and from is the expensive (de)serialization that the GeoArrow standard exists to partially help address.
+
+GeoArrow as a standard exists to address exactly this problem. It has been a focus of [Spatial Data Science Across Languages](https://spatial-data-science.github.io/2024/) since its inception in 2024 and [again in 2025](https://spatial-data-science.github.io/2025/), and as a result we are seeing coordinated adoption across all languages. As an indicator of its importance, GDAL added a [column-oriented Arrow API](https://gdal.org/en/stable/development/rfc/rfc86_column_oriented_api.html). GeoPandas, too, added [native GeoArrow support](https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.to_arrow.html).
+
+At present, R support is limited. The R package {geoarrow} provides a {nanoarrow} and {arrow} compatible vector representation. The ISC-funded geoArrow widget package assists in transporting {geoarrow} vectors to the browser. However, the R community lacks a GeoArrow-native compute engine that can scale effectively.
+
+## Alternative Computation Engines
+
+Currently, there are two primary options for scalable geospatial computation engines in R: 1) duckspatial and 2) sedonadb. Both of these face similar issues:
+neither work with native data.frames and both require external downloads. sedonda db especially challenged due to not being on cran
+
+The duckspatial R package uses the spatial extension to DuckDB. DuckDB relies on downloading and installing an extension. The size alone if reason for concern. Secondly, it requires static linking
+
+https://github.com/OSGeo/gdal/issues/10887
+
+{sedonadb} provides bindings to Apache Sedona. The most fit for large scale analysis but is not available on CRAN and lacks sufficient documentaton as well as has a bespoke API.
+The latter, while arguably the most scalable package, is not available on CRAN and lacks sufficient documentation leading to limited adoption
+
+## GeoParquet
+
+- GeoParquet is becoming the standard for storing and sharing spatial data,
+particularly on cloud object storage
+- The {geoarrow} R package provides GeoParquet metadata to the {arrow} R package so that {arrow} can read GeoParquet natively.
+- Writing GeoParquet is can be done via arrow::write_parquet() (note that sfarrow delegates to arrow directly)
+- This is minimally viable GeoParquet.
+- Parquet's benefit is that row-group metadata can be used to efficiently filter data.
+- At present there is no way easy way to record spatial metadata in a GeoParquet file
+- Geometries are written in the order that they are in the data.frames
+- Spatial proximity is entirely ignored and thus row-groups are not  are not spatially organized meaning libraries cannot spatially filter data without ingesting it.
+- lastly, there is no projjson support in any existing library which means that the CRS of our data can be dropped and downstream tools will not know its CRS
+- The result is a file that other tools can open but that has lost its CRS, and that forces a full scan to answer a spatial query — which on remote storage means transferring the entire file
 
 
-- However, there remains no native GeoArrow computation engine.
-- Spatial data scientists in R still utilize {sf} which, unfortunately, does not scale sufficiently.
- - In part, because geometries are stored as R list objets and converted to and from GEOS and S2 geometries whenever calculations occur.
-- There has been recent developments in the spatial ecosystem such as {duckspatial} and {sedonadb}
-- However, neither of these libraries work with native R data.frames
-{duckspatial} requires installing an external duckdb spatial extension which is 57mb on a MBP M5
-{sedonadb} is not published on CRAN
-{geoarrowrs} is completely dependency free, a 14mb installation, and is targeting full coverage of
+we need an R package with a modest footprint, no system dependencies, no external downloads, that works on GeoArrow natively, provides fast, scalable, and efficient spaital operations, as well as true GeoParquet support.
 
-We need highly performant in-memory spatial operations
+---
+
+TODO
+
+add refernces above
+
+- https://github.com/r-spatial/geoarrowWidget
+- https://stackoverflow.com/questions/78009568/slow-performance-on-r-spatial-distance-calculation
+- https://jacobbradt.com/blog/2022/spatialbatch/
+- https://www.researchgate.net/post/How_to_speed_up_spatial_operations_with_R_sf_package
+- improvements via https://github.com/r-spatial/sf/issues/1925

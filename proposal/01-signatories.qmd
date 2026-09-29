@@ -19,8 +19,6 @@ show their tack record.
 -->
 
 Josiah Parry is a Sr. Product Engineer in Spatial Statistics as Esri.
-This project is a culmination of years of work
-
 
 ## Contributors
 <!--

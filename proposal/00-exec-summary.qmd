@@ -5,22 +5,20 @@ This section provides a condensed view of the entire proposal, one page long.
 It should be a comprehensive high-level overview that captures the essence of the proposal, including its goals, methods, expected outcomes, deliverables, and budget.
 -->
 
-This proposal is for $5,000 USD to fund the completion of a new R package, {geoarrowrs}.
+This proposal seeks to ameliorate three challenges facing the R-spatial ecosystem.
 
-https://github.com/JosiahParry/sfconversions
-https://github.com/JosiahParry/rsgeo
-https://github.com/extendr/arrow-extendr
-https://github.com/JosiahParry/geoarrowrs/
+First, spatial analysis in R "is slow" and can be dramatically improved. The de facto package for vector-based spatial analysis in R is the {sf} package. Due to its ergonomic API and its integration with the tidyverse, it is the common choice for spatial data analysis. However, {sf} can struggle to scale effectively and has caused developers to turn to other tools and other languages.
 
-The `{geoarrow}` R package provides only an R-native representation of geoarrow and integrates with the {arrow} R package
+Secondly, the past few years have seen the rapid adoption of Apache Arrow—a standard for in-memory representation of arrays and tables. The spatial ecosystem, in particular, has been quick to adopt GeoArrow, an extension fo the Arrow standard that defines how spatial data can be represented with Apache Arrow.
 
-`{geoarrowrs}` provides bindings to the geoarrow-rust library
+The standardization on (Geo)Arrow enables the development of pacakges that can work on in-memory data without incurring any additional overhead costs of deserializing and seriailzing data into intermediate objects.
 
-R bindings to the geoarrow-rust library: https://geoarrow.org/geoarrow-rs/
+Lastly, concurrent to the development of GeoArrow has been the development of GeoParquet. At present, GeoParquet support in R has focused on consuming the format. To my knowledge, there is no R package that provides tailored support for writing GeoParqeut as well as reading from remote storage.
 
-with custom bindings to the geo rust crate for high performace computation
-https://github.com/georust/geo
+I seek $5,000 USD to fund the completion of the development of a new Rust-based, GeoArrow native, and highly performent spatial computation engine for R called {geoarrowrs}.
+The R package will provide:
 
-Milestones:
-
-- CRAN submissions and release
+- GeoArrow-native and parallelized computation engine
+- Persistent spatial RTree and KDTree spatial indexes for efficient spatial querying and joining
+- Drop in compatibility with {sf}
+- Enhanced GeoParquet support such as spatial sorting, bounding boxes on row-chunks for predicate pushdown, and persisting coordinate reference systems.

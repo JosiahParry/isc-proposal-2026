@@ -36,7 +36,7 @@ https://jacobbradt.com/blog/2022/spatialbatch/
 https://www.researchgate.net/post/How_to_speed_up_spatial_operations_with_R_sf_package
 improvements via https://github.com/r-spatial/sf/issues/1925
 
-geos has historically been the fastest R package in the ecosystem https://dewey.dunnington.ca/post/2022/geos-version-0.2/ but was very low level and not widely used
+geos has historically been the fastest R package in the ecosystem  but was very low level and not widely used
 geoarrow became a standard in 2023 and its first major spec announced in 2025 https://geoarrow.org/news/release-0-2.html
 
 This package aims to be faster than geos, competitive with duckspatial and sedonadb, and as ergonomic as {sf} (with a drop in replacement via `mask_sf()`)
@@ -52,6 +52,32 @@ https://github.com/JosiahParry/rsgeo
 https://github.com/JosiahParry/anime/
 
 
+
+
+This proposal seeks $5,000 USD to fund the completion of the enw R package, {geoarrowrs}.
+This package provides GeoArrow native and highly performant computation engine.
+New tools are, increasingly, targetting support for Arrow and GeoArrow directly.
+
+I
+This proposal is for $5,000 USD to fund the completion of a new R package, {geoarrowrs}.
+
+https://github.com/JosiahParry/sfconversions
+https://github.com/JosiahParry/rsgeo
+https://github.com/extendr/arrow-extendr
+https://github.com/JosiahParry/geoarrowrs/
+
+The `{geoarrow}` R package provides only an R-native representation of geoarrow and integrates with the {arrow} R package
+
+`{geoarrowrs}` provides bindings to the geoarrow-rust library
+
+R bindings to the geoarrow-rust library: https://geoarrow.org/geoarrow-rs/
+
+with custom bindings to the geo rust crate for high performace computation
+https://github.com/georust/geo
+
+Milestones:
+
+- CRAN submissions and release
 
 
 ## Detail

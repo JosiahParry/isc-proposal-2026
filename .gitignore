@@ -1,3 +1,4 @@
+.DS_store
 # History files
 .Rhistory
 .Rapp.history
@@ -18,3 +19,5 @@ vignettes/*.pdf
 *.pdf
 
 /.quarto/
+
+**/*.quarto_ipynb

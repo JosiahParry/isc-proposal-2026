@@ -2216,9 +2216,8 @@ It should be a comprehensive high-level overview that captures the essence of th
 -->
 <p>This proposal seeks to ameliorate three challenges facing the R-spatial ecosystem.</p>
 <p>First, spatial analysis in R “is slow” and can be dramatically improved. The de facto package for vector-based spatial analysis in R is the {sf} package. Due to its ergonomic API and its integration with the tidyverse, it is the common choice for spatial data analysis. However, {sf} can struggle to scale effectively and has caused developers to turn to other tools and other languages.</p>
-<p>Secondly, the past few years have seen the rapid adoption of Apache Arrow—a standard for in-memory representation of arrays and tables. The spatial ecosystem, in particular, has been quick to adopt GeoArrow, an extension fo the Arrow standard that defines how spatial data can be represented with Apache Arrow.</p>
-<p>The standardization on (Geo)Arrow enables the development of pacakges that can work on in-memory data without incurring any additional overhead costs of deserializing and seriailzing data into intermediate objects.</p>
-<p>Lastly, concurrent to the development of GeoArrow has been the development of GeoParquet. At present, GeoParquet support in R has focused on consuming the format. To my knowledge, there is no R package that provides tailored support for writing GeoParqeut as well as reading from remote storage.</p>
+<p>Secondly, the spatial ecosystem has been quick to adopt GeoArrow, an extension of the Apache Arrow standard that defines how spatial data can be represented in memory. The standardization on (Geo)Arrow enables the development of packages that can work on in-memory data without incurring any additional overhead costs of deserializing and serializing data into intermediate objects.</p>
+<p>Lastly, concurrent to the development of GeoArrow has been the development of GeoParquet. At present, GeoParquet support in R has focused on consuming the format rather than producing it.</p>
 <p>I seek $5,000 USD to fund the completion of the development of a new Rust-based, GeoArrow native, and highly performent spatial computation engine for R called {geoarrowrs}. The R package will provide:</p>
 <ul>
 <li>GeoArrow-native and parallelized computation engine</li>
@@ -2341,9 +2340,7 @@ Include concrete actions you will take and estimated timeline.
 </section>
 <section id="prior-art" class="level2">
 <h2 class="anchored" data-anchor-id="prior-art">Prior art</h2>
-<p>The {geoarrowrs} package is the culmination of years of exploring the intersection of Rust, geospatial, and GeoArrow. Initially, the <a href="https://github.com/JosiahParry/rsgeo">{rsgeo}</a> package was created to be a zero-dependency and high-performance spatial computation engine with <a href="https://github.com/JosiahParry/sfconversions">Rust based conversion</a> to and from {sf}.</p>
-<p>During this time GeoArrow began to pick up. With the <a href="https://github.com/JosiahParry/anime/">{anime}</a> line matching algorithm being a proof of concept for use of GeoArrow in R built on my <a href="https://github.com/extendr/arrow-extendr">arrow-extendr</a> Rust library which provides FFI between R and Rust for {arrow}, {nanoarrow}, {polars}, and {geoarrow} packages.</p>
-<p>In 2024, the <a href="https://github.com/JosiahParry/geoarrowrs/tree/archive/pre-rewrite">initial version</a> of this package was started. But development was paused due to an unstable geoarrow-rust API, and challenges with Arrow FFI that ar now resolved.</p>
+<p>The {geoarrowrs} package is the culmination of years of exploring the intersection of Rust, geospatial, and GeoArrow. Initially, the <a href="https://github.com/JosiahParry/rsgeo">{rsgeo}</a> package was created to be a zero-dependency and high-performance spatial computation engine with <a href="https://github.com/JosiahParry/sfconversions">Rust based conversion</a> to and from {sf}. As GeoArrow began to pick up, the <a href="https://github.com/JosiahParry/anime/">{anime}</a> line matching algorithm became a proof of concept for its use in R, built on my <a href="https://github.com/extendr/arrow-extendr">arrow-extendr</a> Rust library which provides FFI between R and Rust for {arrow}, {nanoarrow}, {polars}, and {geoarrow}. The <a href="https://github.com/JosiahParry/geoarrowrs/tree/archive/pre-rewrite">initial version</a> of this package was started in 2024, but paused due to an unstable geoarrow-rust API and challenges with Arrow FFI that are now resolved.</p>
 </section>
 <section id="detail" class="level2">
 <h2 class="anchored" data-anchor-id="detail">Detail</h2>
@@ -2392,12 +2389,8 @@ What external dependencies does the project have (e.g. libraries, services, othe
 </section>
 <section id="limitations" class="level3">
 <h3 class="anchored" data-anchor-id="limitations">Limitations</h3>
-<p>There are 3 primary limitations.</p>
-<ol type="1">
-<li>Rust powered R packages published to CRAN must vendor their dependencies’ soure code. As a result, the R package tar ball may exceed CRAN’s limits. If this occurs, the R package will need to be partitioned into multiple smaller packages each individually published and geoarrowrs could become a metapackage to load and reexport all of these.</li>
-<li>The core library for geometric operations works only on 2D geometries meaning any operations on geometries with Z or M values is silently lost.</li>
-<li>There is limited support for <code>projjson</code> in the R ecosystem. Converting to and from projjson will be addressed as part of milestone 4. Handling of <em>existing</em> projjson will be straight forward. Conversion from {sf} <code>crs</code> objects may prove to be somewhat challenging.</li>
-</ol>
+<p>The core library for geometric operations works only on 2D geometries meaning any operations on geometries with Z or M values is silently lost.</p>
+<p>The CRAN tarball size and the limited support for <code>projjson</code> in the R ecosystem are also limitations. Both are addressed in Milestones 3 and 4 respectively.</p>
 </section>
 </section>
 </section>

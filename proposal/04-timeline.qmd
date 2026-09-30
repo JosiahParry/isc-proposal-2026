@@ -107,16 +107,7 @@ This milestone would ensure that no external system dependencies would be needed
 Further, the GeoArrow specification records CRS as column level metadata in the projjson format.
 To support this, the [`projjson-rs`](https://github.com/JosiahParry/projjson-rs/tree/main) crate was created which provides strongly typed reading and writing of `projjson` with no external system dependencies. As a result, GeoArrow transferred from DuckDB, R, Python, and GDAL would propagate the CRS correctly.
 
-The column level metadata is also utilized by GeoParquet. As such, this milestone completely implements the GeoParquet 1.1 column metadata including:
-
-- encoding
-- geometry_types
-- crs
-- bbox
-- covering
-- orientation
-- edges
-- epoch
+The column level metadata is also utilized by GeoParquet. As such, this milestone completely implements the GeoParquet 1.1 column metadata: `encoding`, `geometry_types`, `crs`, `bbox`, `covering`, `orientation`, `edges`, and `epoch`.
 
 Of these, `covering` matters most. It records a bounding box column whose Parquet statistics allow a reader to skip row groups that cannot satisfy a spatial query, which, paired with the spatial sorting from Milestone 2, is what makes partial reads of a GeoParquet file effective.
 

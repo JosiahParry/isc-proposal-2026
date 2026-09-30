@@ -2485,17 +2485,7 @@ to be shared quarterly on the R Consortium blog.
 <h3 class="anchored" data-anchor-id="milestone-4---geoarrow-and-geoparquet-metadata-1000">Milestone 4 - GeoArrow and GeoParquet metadata ($1,000)</h3>
 <p>At present, geoarrowrs cannot propogate a coordinate reference system (CRS) across the R to Rust FFI boundary. Milestone 3 is possible by leaning on {sf}’s CRS object and adding it as an attribute on the geoarrow vectors which requires PROJ to be installed. This milestone would ensure that no external system dependencies would be needed.</p>
 <p>Further, the GeoArrow specification records CRS as column level metadata in the projjson format. To support this, the <a href="https://github.com/JosiahParry/projjson-rs/tree/main"><code>projjson-rs</code></a> crate was created which provides strongly typed reading and writing of <code>projjson</code> with no external system dependencies. As a result, GeoArrow transferred from DuckDB, R, Python, and GDAL would propagate the CRS correctly.</p>
-<p>The column level metadata is also utilized by GeoParquet. As such, this milestone completely implements the GeoParquet 1.1 column metadata including:</p>
-<ul>
-<li>encoding</li>
-<li>geometry_types</li>
-<li>crs</li>
-<li>bbox</li>
-<li>covering</li>
-<li>orientation</li>
-<li>edges</li>
-<li>epoch</li>
-</ul>
+<p>The column level metadata is also utilized by GeoParquet. As such, this milestone completely implements the GeoParquet 1.1 column metadata: <code>encoding</code>, <code>geometry_types</code>, <code>crs</code>, <code>bbox</code>, <code>covering</code>, <code>orientation</code>, <code>edges</code>, and <code>epoch</code>.</p>
 <p>Of these, <code>covering</code> matters most. It records a bounding box column whose Parquet statistics allow a reader to skip row groups that cannot satisfy a spatial query, which, paired with the spatial sorting from Milestone 2, is what makes partial reads of a GeoParquet file effective.</p>
 <p>Completion is expected within 6 months of the award date.</p>
 <!--

@@ -80,7 +80,7 @@ Completion is expected within 2 months of the award date.
 
 This milestone funds the development of creating and persisting spatial RTree and KDTree spatial indexes. These spatial indexes are created on the fly for each operation performed by {sf} as well as other libraries. For operations that require repeated look ups, persisting the index can be highly efficient.
 
-Further, these indexes can be used to perform sorting of geometries to ensure that nearby geometries are orded together. Spatial sorting can greatly improve the effectiveness of row group statistics in GeoParquet files. Partial reads of a GeoParquet file can leverage the sorting more effectively.
+Further, these indexes can be used to perform sorting of geometries to ensure that nearby geometries are ordered together. Spatial sorting greatly improves the effectiveness of row group statistics in GeoParquet files, which is what makes partial reads possible.
 
 For spatial sorting, Hilbert and sort-tile-recursive (STR) will both be supported. {geos} provides an STR tree, but it cannot be persisted to disk or used to sort geometries, and no other R package, to my knowledge, provides either capability.
 

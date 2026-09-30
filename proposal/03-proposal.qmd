@@ -33,10 +33,10 @@ This package aims to be faster than geos, competitive with duckspatial and sedon
 
 Completion of the package is split into four milestones:
 
-1. Complete core geometry engine so that every algorithm provided by the Rust crate [`geo`](https://github.com/georust/geo) as of this writing is available from R. This would achieve near parity with {sf} on most operations.
-2. Create spatial indexes that can be written to disk which can be used to spatiall sort geometries for more efficient GeoParquet storage.
-3. Provide drop in {sf} compatibility via `mask_sf()` so that {geoarrowrs} can be used as a backend for {sf} and release the package on CRAN.
-4. Persist coordinate reference systems, so that GeoArrow transfer between R, Python, DuckDB, and GDAL can be lossless. This milestone also targets GeoParquet column meta persistence enabled by milestone 2.
+1. Complete the core geometry engine so that every algorithm provided by the Rust crate [`geo`](https://github.com/georust/geo) is available from R.
+2. Create spatial indexes that can be written to disk and used to spatially sort geometries.
+3. Provide drop in {sf} compatibility via `mask_sf()` and release the package on CRAN.
+4. Persist coordinate reference systems so that GeoArrow transfer between R, Python, DuckDB, and GDAL is lossless.
 
 
 ## Prior art

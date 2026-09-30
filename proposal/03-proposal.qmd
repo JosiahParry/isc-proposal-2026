@@ -101,11 +101,8 @@ What external dependencies does the project have (e.g. libraries, services, othe
 
 - Imports: [cli](https://cli.r-lib.org/), [rlang](https://rlang.r-lib.org/)
 - Suggests: [arrow](https://arrow.apache.org/docs/r/), [dplyr](https://dplyr.tidyverse.org/), [geoarrow](https://github.com/geoarrow/geoarrow-r), [nanoarrow](https://arrow.apache.org/nanoarrow/latest/r/), [sf](https://r-spatial.github.io/sf/), [wk](https://paleolimbot.github.io/wk/), [testthat](https://testthat.r-lib.org/), and [withr](https://withr.r-lib.org/)
-- Rust and Arrow FFI: [extendr-api](https://github.com/extendr/extendr), [arrow-extendr](https://github.com/extendr/arrow-extendr), and [arrow](https://docs.rs/arrow)
-- Geometry operations: [geo](https://github.com/georust/geo), [geo-traits](https://docs.rs/geo-traits), and [geo-index](https://docs.rs/geo-index)
-- GeoArrow array representation: [geoarrow](https://geoarrow.org/geoarrow-rs/), [geoarrow-array](https://docs.rs/geoarrow-array), [geoarrow-cast](https://docs.rs/geoarrow-cast), [geoarrow-flatgeobuf](https://docs.rs/geoarrow-flatgeobuf), and [geoarrow-geojson](https://docs.rs/geoarrow-geojson)
-- File format readers: [flatgeobuf](https://crates.io/crates/flatgeobuf), [geojson](https://crates.io/crates/geojson), and [shapefile](https://crates.io/crates/shapefile)
-- Parallelism and error handling: [rayon](https://docs.rs/rayon), [serde_json](https://docs.rs/serde_json), and [anyhow](https://docs.rs/anyhow)
+
+The Rust crates are named in the architecture section above and enumerated in the package's [Cargo.toml](https://github.com/JosiahParry/geoarrowrs/blob/main/src/rust/Cargo.toml).
 
 ### Limitations
 

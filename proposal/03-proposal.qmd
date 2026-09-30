@@ -41,13 +41,7 @@ Completion of the package is split into four milestones:
 
 ## Prior art
 
-The {geoarrowrs} package is the culmination of years of exploring the intersection of Rust, geospatial, and GeoArrow.
-Initially, the [{rsgeo}](https://github.com/JosiahParry/rsgeo) package was created to be a zero-dependency and high-performance spatial computation engine with [Rust based conversion](https://github.com/JosiahParry/sfconversions) to and from {sf}.
-
-During this time GeoArrow began to pick up. With the [{anime}](https://github.com/JosiahParry/anime/) line matching algorithm being a proof of concept for use of GeoArrow in R built on my [arrow-extendr](https://github.com/extendr/arrow-extendr) Rust library which provides FFI between R and Rust for {arrow}, {nanoarrow}, {polars}, and {geoarrow} packages.
-
-
-In 2024, the [initial version](https://github.com/JosiahParry/geoarrowrs/tree/archive/pre-rewrite) of this package was started. But development was paused due to an unstable geoarrow-rust API, and challenges with Arrow FFI that ar now resolved.
+The {geoarrowrs} package is the culmination of years of exploring the intersection of Rust, geospatial, and GeoArrow. Initially, the [{rsgeo}](https://github.com/JosiahParry/rsgeo) package was created to be a zero-dependency and high-performance spatial computation engine with [Rust based conversion](https://github.com/JosiahParry/sfconversions) to and from {sf}. As GeoArrow began to pick up, the [{anime}](https://github.com/JosiahParry/anime/) line matching algorithm became a proof of concept for its use in R, built on my [arrow-extendr](https://github.com/extendr/arrow-extendr) Rust library which provides FFI between R and Rust for {arrow}, {nanoarrow}, {polars}, and {geoarrow}. The [initial version](https://github.com/JosiahParry/geoarrowrs/tree/archive/pre-rewrite) of this package was started in 2024, but paused due to an unstable geoarrow-rust API and challenges with Arrow FFI that are now resolved.
 
 
 
@@ -115,8 +109,6 @@ What external dependencies does the project have (e.g. libraries, services, othe
 
 ### Limitations
 
-There are 3 primary limitations.
+The core library for geometric operations works only on 2D geometries meaning any operations on geometries with Z or M values is silently lost.
 
-1. Rust powered R packages published to CRAN must vendor their dependencies' soure code. As a result, the R package tar ball may exceed CRAN's limits. If this occurs, the R package will need to be partitioned into multiple smaller packages each individually published and geoarrowrs could become a metapackage to load and reexport all of these.
-2. The core library for geometric operations works only on 2D geometries meaning any operations on geometries with Z or M values is silently lost.
-3. There is limited support for `projjson` in the R ecosystem. Converting to and from projjson will be addressed as part of milestone 4. Handling of _existing_ projjson will be straight forward. Conversion from {sf} `crs` objects may prove to be somewhat challenging.
+The CRAN tarball size and the limited support for `projjson` in the R ecosystem are also limitations. Both are addressed in Milestones 3 and 4 respectively.

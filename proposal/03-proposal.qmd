@@ -7,18 +7,6 @@ how will you recover from them?
 This is where the proposal should be outlined.
 -->
 
-This proposal is to fund the completion of the R package, {geoarrowrs}, which is a geoarrow-native compute engine for the R ecosystem.
-
-The R package will provide memory efficient and parallelized implementation for geometric operations out of the box.
-In addition, it will provide advanced spatial join and query operations.
-The R package will integrate into the existing ecosystem with a focus on integration with {arrow}, {dplyr}, and {sf} to minimize friction in adoption.
-
-This proposal is for work in the following
-
-1. Core geometry algorithm implementation
-2. Parallelization and
-3. {sf} integration
-
 
 ## Overview
 <!--
@@ -33,8 +21,6 @@ Include concrete actions you will take and estimated timeline.
 
 The {geoarrowrs} package is a GeoArrow-native spatial computation engine designed for ergonomic use within the R ecosystem. The package is in the middle of its development life cycle and this grant would fund its completion.
 
-This package aims to be faster than geos, competitive with duckspatial and sedonadb, and as ergonomic as {sf} (with a drop in replacement via `mask_sf()`) for **in memory** computation.
-
 Today, the package provides:
 
 - performant readers for shapfile, GeoJson, and FlatGeobuf
@@ -42,14 +28,15 @@ Today, the package provides:
 - Spatial, nearest neighbor, and distance band joins
 - User defined functions registered with {arrow}
 
+
+This package aims to be faster than geos, competitive with duckspatial and sedonadb, and as ergonomic as {sf} (with a drop in replacement via `mask_sf()`) for **in memory** computation.
+
 Completion of the package is split into four milestones:
 
 1. Complete core geometry engine so that every algorithm provided by the Rust crate [`geo`](https://github.com/georust/geo) as of this writing is available from R. This would achieve near parity with {sf} on most operations.
 2. Create spatial indexes that can be written to disk which can be used to spatiall sort geometries for more efficient GeoParquet storage.
 3. Provide drop in {sf} compatibility via `mask_sf()` so that {geoarrowrs} can be used as a backend for {sf} and release the package on CRAN.
 4. Persist coordinate reference systems, so that GeoArrow transfer between R, Python, DuckDB, and GDAL can be lossless. This milestone also targets GeoParquet column meta persistence enabled by milestone 2.
-
-
 
 
 ## Prior art
@@ -71,36 +58,6 @@ against the problem.
 
 Depending on project type the detail section should include:
 -->
-- Core R package:
-    - File readers:
-        - [flatgeobuf](https://crates.io/crates/flatgeobuf)
-        - [shapefile](https://crates.io/crates/shapefile)
-        - [geojson](https://crates.io/crates/geojson)
-    - Spatial Indexes:
-        - KD-tree
-        - RTree
-    - Spatial Sorting:
-        - Hilbert
-        - Sort-tile-recursive
-    - Spatial Joins
-        - All basic spatial predictates
-        - KNN join
-        - Distance Joins
-    - Full coverage of all geometric operations in georust/geo
-- {arrow} R package registered user defined functions
-- sf compatibility S3 method registration
-- CRS propagation?
-
-### Readers
-
-- provided by geoarrow for geosjons and flatgeobuf
-- shapefile needs manual im
-
-### Algorithm Implementation
-
-- Relying on geo for core geometric operation algorithms
-- Joins are hand crafted used both geo and geo-index for creating query trees
-
 
 ### Minimum Viable Product
 
@@ -108,23 +65,28 @@ Depending on project type the detail section should include:
 What is the smallest thing you can build that delivers value to your users?
 -->
 
+A minimal viable product provides the core geometry implementations on geoarrow arrays in R.
+The stat eof the R package today is nearly an MVP. With this funding it can be improved to be a high quality spatial package for the R ecosystem.
+
 ### Architecture
 
 <!--
 What does the high-level architecture look like?
 -->
 
-- Rust based R package via [extendr](https://github.com/extendr/extendr)
-- Arrow FFI between R and Rust via [arrow-extendr](https://github.com/extendr/arrow-extendr)
-- GeoArrow array representation via [geoarrow-rs](https://geoarrow.org/geoarrow-rs/)
-- Native algorithms using [geo](https://github.com/georust/geo)
-- Coordinate reference systems via [projjson](https://github.com/JosiahParry/projjson-rs)
-- Spatial Indexing using geo-index
-- Readers and writer using:
-    - geozero https://docs.rs/crate/geozero/0.14.0
-    - geojson
-    - flatgeobuf
-- Parallelism via https://docs.rs/rayon
+The [{geoarrowrs}](https://github.com/JosiahParry/geoarrowrs) package is a Rust-powered R package
+built on [extendr](https://github.com/extendr/extendr).
+[Arrow](https://arrow.apache.org/) to Rust FFI is handled via the
+[arrow-extendr](https://github.com/extendr/arrow-extendr) crate that I built and maintain.
+The R representation of [GeoArrow](https://geoarrow.org/) arrays leans on the implementation of the
+[{geoarrow}](https://github.com/geoarrow/geoarrow-r) R package.
+Native algorithms use the [geo](https://github.com/georust/geo) Rust crate via the constant-time access via the [geo-traits](https://docs.rs/geo-traits) crate.
+Paralleization of geometric operations is handled via the [rayon](https://docs.rs/rayon) crate.
+In GeoArrow, coordinate reference systems (CRS) must be represented as [projjson](https://proj.org/en/latest/specifications/projjson.html).
+For this, a new Rust crate, [projjson](https://github.com/JosiahParry/projjson-rs), was prototyped and published.
+Milestone 4 integrates it into {geoarrowrs}.
+Spatial indexes are created and persisted using the [geo-index](https://docs.rs/geo-index) Rust crate.
+
 
 ### Assumptions
 
@@ -132,13 +94,29 @@ What does the high-level architecture look like?
 What assumptions are you making that, if proven false, would invalidate the project?
 -->
 
+There are no outstanding assumptions that can invalidate the concept proposed here.
+It has been validated over three years of experimentation and development in the geopspatial and Rust enviornments.
+
 ### External dependencies
 
 <!--
 What external dependencies does the project have (e.g. libraries, services, other projects, etc.)?
 -->
 
+{geoarrowrs} has no external system dependencies. It does not link GDAL, GEOS, PROJ, DuckDB, nor are there any runtime downloads. Dependencies are pure-Rust that are only required at build time. CRAN will build and provide package binaries.
+
+- Imports: [cli](https://cli.r-lib.org/), [rlang](https://rlang.r-lib.org/)
+- Suggests: [arrow](https://arrow.apache.org/docs/r/), [dplyr](https://dplyr.tidyverse.org/), [geoarrow](https://github.com/geoarrow/geoarrow-r), [nanoarrow](https://arrow.apache.org/nanoarrow/latest/r/), [sf](https://r-spatial.github.io/sf/), [wk](https://paleolimbot.github.io/wk/), [testthat](https://testthat.r-lib.org/), and [withr](https://withr.r-lib.org/)
+- Rust and Arrow FFI: [extendr-api](https://github.com/extendr/extendr), [arrow-extendr](https://github.com/extendr/arrow-extendr), and [arrow](https://docs.rs/arrow)
+- Geometry operations: [geo](https://github.com/georust/geo), [geo-traits](https://docs.rs/geo-traits), and [geo-index](https://docs.rs/geo-index)
+- GeoArrow array representation: [geoarrow](https://geoarrow.org/geoarrow-rs/), [geoarrow-array](https://docs.rs/geoarrow-array), [geoarrow-cast](https://docs.rs/geoarrow-cast), [geoarrow-flatgeobuf](https://docs.rs/geoarrow-flatgeobuf), and [geoarrow-geojson](https://docs.rs/geoarrow-geojson)
+- File format readers: [flatgeobuf](https://crates.io/crates/flatgeobuf), [geojson](https://crates.io/crates/geojson), and [shapefile](https://crates.io/crates/shapefile)
+- Parallelism and error handling: [rayon](https://docs.rs/rayon), [serde_json](https://docs.rs/serde_json), and [anyhow](https://docs.rs/anyhow)
+
 ### Limitations
 
-- No CRS support at present—addressed by Milestone 4 via the projjson crate
-- Limited spherical / geodesic support—true in duckspatial, too
+There are 3 primary limitations.
+
+1. Rust powered R packages published to CRAN must vendor their dependencies' soure code. As a result, the R package tar ball may exceed CRAN's limits. If this occurs, the R package will need to be partitioned into multiple smaller packages each individually published and geoarrowrs could become a metapackage to load and reexport all of these.
+2. The core library for geometric operations works only on 2D geometries meaning any operations on geometries with Z or M values is silently lost.
+3. There is limited support for `projjson` in the R ecosystem. Converting to and from projjson will be addressed as part of milestone 4. Handling of _existing_ projjson will be straight forward. Conversion from {sf} `crs` objects may prove to be somewhat challenging.

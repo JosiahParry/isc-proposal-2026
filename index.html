@@ -2320,14 +2320,6 @@ how will you recover from them?
 
 This is where the proposal should be outlined.
 -->
-<p>This proposal is to fund the completion of the R package, {geoarrowrs}, which is a geoarrow-native compute engine for the R ecosystem.</p>
-<p>The R package will provide memory efficient and parallelized implementation for geometric operations out of the box. In addition, it will provide advanced spatial join and query operations. The R package will integrate into the existing ecosystem with a focus on integration with {arrow}, {dplyr}, and {sf} to minimize friction in adoption.</p>
-<p>This proposal is for work in the following</p>
-<ol type="1">
-<li>Core geometry algorithm implementation</li>
-<li>Parallelization and</li>
-<li>{sf} integration</li>
-</ol>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <!--
@@ -2339,7 +2331,6 @@ section.
 Include concrete actions you will take and estimated timeline.
 -->
 <p>The {geoarrowrs} package is a GeoArrow-native spatial computation engine designed for ergonomic use within the R ecosystem. The package is in the middle of its development life cycle and this grant would fund its completion.</p>
-<p>This package aims to be faster than geos, competitive with duckspatial and sedonadb, and as ergonomic as {sf} (with a drop in replacement via <code>mask_sf()</code>) for <strong>in memory</strong> computation.</p>
 <p>Today, the package provides:</p>
 <ul>
 <li>performant readers for shapfile, GeoJson, and FlatGeobuf</li>
@@ -2347,6 +2338,7 @@ Include concrete actions you will take and estimated timeline.
 <li>Spatial, nearest neighbor, and distance band joins</li>
 <li>User defined functions registered with {arrow}</li>
 </ul>
+<p>This package aims to be faster than geos, competitive with duckspatial and sedonadb, and as ergonomic as {sf} (with a drop in replacement via <code>mask_sf()</code>) for <strong>in memory</strong> computation.</p>
 <p>Completion of the package is split into four milestones:</p>
 <ol type="1">
 <li>Complete core geometry engine so that every algorithm provided by the Rust crate <a href="https://github.com/georust/geo"><code>geo</code></a> as of this writing is available from R. This would achieve near parity with {sf} on most operations.</li>
@@ -2369,96 +2361,51 @@ against the problem.
 
 Depending on project type the detail section should include:
 -->
-<ul>
-<li>Core R package:
-<ul>
-<li>File readers:
-<ul>
-<li><a href="https://crates.io/crates/flatgeobuf">flatgeobuf</a></li>
-<li><a href="https://crates.io/crates/shapefile">shapefile</a></li>
-<li><a href="https://crates.io/crates/geojson">geojson</a></li>
-</ul></li>
-<li>Spatial Indexes:
-<ul>
-<li>KD-tree</li>
-<li>RTree</li>
-</ul></li>
-<li>Spatial Sorting:
-<ul>
-<li>Hilbert</li>
-<li>Sort-tile-recursive</li>
-</ul></li>
-<li>Spatial Joins
-<ul>
-<li>All basic spatial predictates</li>
-<li>KNN join</li>
-<li>Distance Joins</li>
-</ul></li>
-<li>Full coverage of all geometric operations in georust/geo</li>
-</ul></li>
-<li>{arrow} R package registered user defined functions</li>
-<li>sf compatibility S3 method registration</li>
-<li>CRS propagation?</li>
-</ul>
-<section id="readers" class="level3">
-<h3 class="anchored" data-anchor-id="readers">Readers</h3>
-<ul>
-<li>provided by geoarrow for geosjons and flatgeobuf</li>
-<li>shapefile needs manual im</li>
-</ul>
-</section>
-<section id="algorithm-implementation" class="level3">
-<h3 class="anchored" data-anchor-id="algorithm-implementation">Algorithm Implementation</h3>
-<ul>
-<li>Relying on geo for core geometric operation algorithms</li>
-<li>Joins are hand crafted used both geo and geo-index for creating query trees</li>
-</ul>
-</section>
 <section id="minimum-viable-product" class="level3">
 <h3 class="anchored" data-anchor-id="minimum-viable-product">Minimum Viable Product</h3>
 <!--
 What is the smallest thing you can build that delivers value to your users?
 -->
+<p>A minimal viable product provides the core geometry implementations on geoarrow arrays in R. The stat eof the R package today is nearly an MVP. With this funding it can be improved to be a high quality spatial package for the R ecosystem.</p>
 </section>
 <section id="architecture" class="level3">
 <h3 class="anchored" data-anchor-id="architecture">Architecture</h3>
 <!--
 What does the high-level architecture look like?
 -->
-<ul>
-<li>Rust based R package via <a href="https://github.com/extendr/extendr">extendr</a></li>
-<li>Arrow FFI between R and Rust via <a href="https://github.com/extendr/arrow-extendr">arrow-extendr</a></li>
-<li>GeoArrow array representation via <a href="https://geoarrow.org/geoarrow-rs/">geoarrow-rs</a></li>
-<li>Native algorithms using <a href="https://github.com/georust/geo">geo</a></li>
-<li>Coordinate reference systems via <a href="https://github.com/JosiahParry/projjson-rs">projjson</a></li>
-<li>Spatial Indexing using geo-index</li>
-<li>Readers and writer using:
-<ul>
-<li>geozero https://docs.rs/crate/geozero/0.14.0</li>
-<li>geojson</li>
-<li>flatgeobuf</li>
-</ul></li>
-<li>Parallelism via https://docs.rs/rayon</li>
-</ul>
+<p>The <a href="https://github.com/JosiahParry/geoarrowrs">{geoarrowrs}</a> package is a Rust-powered R package built on <a href="https://github.com/extendr/extendr">extendr</a>. <a href="https://arrow.apache.org/">Arrow</a> to Rust FFI is handled via the <a href="https://github.com/extendr/arrow-extendr">arrow-extendr</a> crate that I built and maintain. The R representation of <a href="https://geoarrow.org/">GeoArrow</a> arrays leans on the implementation of the <a href="https://github.com/geoarrow/geoarrow-r">{geoarrow}</a> R package. Native algorithms use the <a href="https://github.com/georust/geo">geo</a> Rust crate via the constant-time access via the <a href="https://docs.rs/geo-traits">geo-traits</a> crate. Paralleization of geometric operations is handled via the <a href="https://docs.rs/rayon">rayon</a> crate. In GeoArrow, coordinate reference systems (CRS) must be represented as <a href="https://proj.org/en/latest/specifications/projjson.html">projjson</a>. For this, a new Rust crate, <a href="https://github.com/JosiahParry/projjson-rs">projjson</a>, was prototyped and published. Milestone 4 integrates it into {geoarrowrs}. Spatial indexes are created and persisted using the <a href="https://docs.rs/geo-index">geo-index</a> Rust crate.</p>
 </section>
 <section id="assumptions" class="level3">
 <h3 class="anchored" data-anchor-id="assumptions">Assumptions</h3>
 <!--
 What assumptions are you making that, if proven false, would invalidate the project?
 -->
+<p>There are no outstanding assumptions that can invalidate the concept proposed here. It has been validated over three years of experimentation and development in the geopspatial and Rust enviornments.</p>
 </section>
 <section id="external-dependencies" class="level3">
 <h3 class="anchored" data-anchor-id="external-dependencies">External dependencies</h3>
 <!--
 What external dependencies does the project have (e.g. libraries, services, other projects, etc.)?
 -->
+<p>{geoarrowrs} has no external system dependencies. It does not link GDAL, GEOS, PROJ, DuckDB, nor are there any runtime downloads. Dependencies are pure-Rust that are only required at build time. CRAN will build and provide package binaries.</p>
+<ul>
+<li>Imports: <a href="https://cli.r-lib.org/">cli</a>, <a href="https://rlang.r-lib.org/">rlang</a></li>
+<li>Suggests: <a href="https://arrow.apache.org/docs/r/">arrow</a>, <a href="https://dplyr.tidyverse.org/">dplyr</a>, <a href="https://github.com/geoarrow/geoarrow-r">geoarrow</a>, <a href="https://arrow.apache.org/nanoarrow/latest/r/">nanoarrow</a>, <a href="https://r-spatial.github.io/sf/">sf</a>, <a href="https://paleolimbot.github.io/wk/">wk</a>, <a href="https://testthat.r-lib.org/">testthat</a>, and <a href="https://withr.r-lib.org/">withr</a></li>
+<li>Rust and Arrow FFI: <a href="https://github.com/extendr/extendr">extendr-api</a>, <a href="https://github.com/extendr/arrow-extendr">arrow-extendr</a>, and <a href="https://docs.rs/arrow">arrow</a></li>
+<li>Geometry operations: <a href="https://github.com/georust/geo">geo</a>, <a href="https://docs.rs/geo-traits">geo-traits</a>, and <a href="https://docs.rs/geo-index">geo-index</a></li>
+<li>GeoArrow array representation: <a href="https://geoarrow.org/geoarrow-rs/">geoarrow</a>, <a href="https://docs.rs/geoarrow-array">geoarrow-array</a>, <a href="https://docs.rs/geoarrow-cast">geoarrow-cast</a>, <a href="https://docs.rs/geoarrow-flatgeobuf">geoarrow-flatgeobuf</a>, and <a href="https://docs.rs/geoarrow-geojson">geoarrow-geojson</a></li>
+<li>File format readers: <a href="https://crates.io/crates/flatgeobuf">flatgeobuf</a>, <a href="https://crates.io/crates/geojson">geojson</a>, and <a href="https://crates.io/crates/shapefile">shapefile</a></li>
+<li>Parallelism and error handling: <a href="https://docs.rs/rayon">rayon</a>, <a href="https://docs.rs/serde_json">serde_json</a>, and <a href="https://docs.rs/anyhow">anyhow</a></li>
+</ul>
 </section>
 <section id="limitations" class="level3">
 <h3 class="anchored" data-anchor-id="limitations">Limitations</h3>
-<ul>
-<li>No CRS support at present—addressed by Milestone 4 via the projjson crate</li>
-<li>Limited spherical / geodesic support—true in duckspatial, too</li>
-</ul>
+<p>There are 3 primary limitations.</p>
+<ol type="1">
+<li>Rust powered R packages published to CRAN must vendor their dependencies’ soure code. As a result, the R package tar ball may exceed CRAN’s limits. If this occurs, the R package will need to be partitioned into multiple smaller packages each individually published and geoarrowrs could become a metapackage to load and reexport all of these.</li>
+<li>The core library for geometric operations works only on 2D geometries meaning any operations on geometries with Z or M values is silently lost.</li>
+<li>There is limited support for <code>projjson</code> in the R ecosystem. Converting to and from projjson will be addressed as part of milestone 4. Handling of <em>existing</em> projjson will be straight forward. Conversion from {sf} <code>crs</code> objects may prove to be somewhat challenging.</li>
+</ol>
 </section>
 </section>
 </section>

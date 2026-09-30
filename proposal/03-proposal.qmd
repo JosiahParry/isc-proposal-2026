@@ -30,54 +30,38 @@ section.
 Include concrete actions you will take and estimated timeline.
 -->
 
-"sf is slow"
-https://stackoverflow.com/questions/78009568/slow-performance-on-r-spatial-distance-calculation
-https://jacobbradt.com/blog/2022/spatialbatch/
-https://www.researchgate.net/post/How_to_speed_up_spatial_operations_with_R_sf_package
-improvements via https://github.com/r-spatial/sf/issues/1925
 
-geos has historically been the fastest R package in the ecosystem  but was very low level and not widely used
-geoarrow became a standard in 2023 and its first major spec announced in 2025 https://geoarrow.org/news/release-0-2.html
+The {geoarrowrs} package is a GeoArrow-native spatial computation engine designed for ergonomic use within the R ecosystem. The package is in the middle of its development life cycle and this grant would fund its completion.
 
-This package aims to be faster than geos, competitive with duckspatial and sedonadb, and as ergonomic as {sf} (with a drop in replacement via `mask_sf()`)
-for **in memory** computation
+This package aims to be faster than geos, competitive with duckspatial and sedonadb, and as ergonomic as {sf} (with a drop in replacement via `mask_sf()`) for **in memory** computation.
+
+Today, the package provides:
+
+- performant readers for shapfile, GeoJson, and FlatGeobuf
+- R-tree and KD-tree spatial indexes
+- Spatial, nearest neighbor, and distance band joins
+- User defined functions registered with {arrow}
+
+Completion of the package is split into four milestones:
+
+1. Complete core geometry engine so that every algorithm provided by the Rust crate [`geo`](https://github.com/georust/geo) as of this writing is available from R. This would achieve near parity with {sf} on most operations.
+2. Create spatial indexes that can be written to disk which can be used to spatiall sort geometries for more efficient GeoParquet storage.
+3. Provide drop in {sf} compatibility via `mask_sf()` so that {geoarrowrs} can be used as a backend for {sf} and release the package on CRAN.
+4. Persist coordinate reference systems, so that GeoArrow transfer between R, Python, DuckDB, and GDAL can be lossless. This milestone also targets GeoParquet column meta persistence enabled by milestone 2.
+
+
+
 
 ## Prior art
 
-based on years of work culminating to this point
-starting with rust bindings to the geo crate as an early rust based geometry computation engine
+The {geoarrowrs} package is the culmination of years of exploring the intersection of Rust, geospatial, and GeoArrow.
+Initially, the [{rsgeo}](https://github.com/JosiahParry/rsgeo) package was created to be a zero-dependency and high-performance spatial computation engine with [Rust based conversion](https://github.com/JosiahParry/sfconversions) to and from {sf}.
 
-https://github.com/JosiahParry/sfconversions
-https://github.com/JosiahParry/rsgeo
-https://github.com/JosiahParry/anime/
+During this time GeoArrow began to pick up. With the [{anime}](https://github.com/JosiahParry/anime/) line matching algorithm being a proof of concept for use of GeoArrow in R built on my [arrow-extendr](https://github.com/extendr/arrow-extendr) Rust library which provides FFI between R and Rust for {arrow}, {nanoarrow}, {polars}, and {geoarrow} packages.
 
 
+In 2024, the [initial version](https://github.com/JosiahParry/geoarrowrs/tree/archive/pre-rewrite) of this package was started. But development was paused due to an unstable geoarrow-rust API, and challenges with Arrow FFI that ar now resolved.
 
-
-This proposal seeks $5,000 USD to fund the completion of the enw R package, {geoarrowrs}.
-This package provides GeoArrow native and highly performant computation engine.
-New tools are, increasingly, targetting support for Arrow and GeoArrow directly.
-
-I
-This proposal is for $5,000 USD to fund the completion of a new R package, {geoarrowrs}.
-
-https://github.com/JosiahParry/sfconversions
-https://github.com/JosiahParry/rsgeo
-https://github.com/extendr/arrow-extendr
-https://github.com/JosiahParry/geoarrowrs/
-
-The `{geoarrow}` R package provides only an R-native representation of geoarrow and integrates with the {arrow} R package
-
-`{geoarrowrs}` provides bindings to the geoarrow-rust library
-
-R bindings to the geoarrow-rust library: https://geoarrow.org/geoarrow-rs/
-
-with custom bindings to the geo rust crate for high performace computation
-https://github.com/georust/geo
-
-Milestones:
-
-- CRAN submissions and release
 
 
 ## Detail
@@ -132,7 +116,9 @@ What does the high-level architecture look like?
 
 - Rust based R package via [extendr](https://github.com/extendr/extendr)
 - Arrow FFI between R and Rust via [arrow-extendr](https://github.com/extendr/arrow-extendr)
-- Native algorithms using [geo](https://docs.rs/geo)
+- GeoArrow array representation via [geoarrow-rs](https://geoarrow.org/geoarrow-rs/)
+- Native algorithms using [geo](https://github.com/georust/geo)
+- Coordinate reference systems via [projjson](https://github.com/JosiahParry/projjson-rs)
 - Spatial Indexing using geo-index
 - Readers and writer using:
     - geozero https://docs.rs/crate/geozero/0.14.0
@@ -154,5 +140,5 @@ What external dependencies does the project have (e.g. libraries, services, othe
 
 ### Limitations
 
-- No CRS support at present—may be able to do this via {wk}
+- No CRS support at present—addressed by Milestone 4 via the projjson crate
 - Limited spherical / geodesic support—true in duckspatial, too

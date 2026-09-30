@@ -61,14 +61,3 @@ particularly on cloud object storage
 
 we need an R package with a modest footprint, no system dependencies, no external downloads, that works on GeoArrow natively, provides fast, scalable, and efficient spaital operations, as well as true GeoParquet support.
 
----
-
-TODO
-
-add refernces above
-
-- https://github.com/r-spatial/geoarrowWidget
-- https://stackoverflow.com/questions/78009568/slow-performance-on-r-spatial-distance-calculation
-- https://jacobbradt.com/blog/2022/spatialbatch/
-- https://www.researchgate.net/post/How_to_speed_up_spatial_operations_with_R_sf_package
-- improvements via https://github.com/r-spatial/sf/issues/1925

@@ -44,8 +44,6 @@ to be shared quarterly on the R Consortium blog.
  - [ ] ISC meetings
 -->
 
-The package's website includes a replication of the [duckspatial benchmark](https://cidree.github.io/duckspatial/articles/benchmark.html) to compare geoarrowrs, sedonadb, and duckspatial. In addition, there will be a geoarrowrs implementation of Apache Sedona [SpatialBench](https://github.com/apache/sedona-spatialbench) for a reference.
-
 A formal CRAN release will indicate completion of the project followed by a join blog post with the R Consortium.
 
 Upon successful completion, the `mask_sf()` capability will inform completion and development of the [`{sdf}`](https://github.com/JosiahParry/sdf) R package which provides a geometry-agnostic interface. I will contact the R-spatial organization and ask if the package can be formally integrated into the ecosystem.

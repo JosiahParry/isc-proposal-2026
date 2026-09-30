@@ -9,16 +9,24 @@ thorough understanding going in of what the risks are to delivery
 What does success look like?
 -->
 
+All four milestones are completed, package published on CRAN, and the joint blog post with the R Consortium is published.
+
+
 ## Measuring success
 <!--
 How will we know when success is achieved, what markers can we use
 along the way
 -->
 
-Correctness tests with sf
+Correctness is measured against {sf}. Every operation shared with {sf} is tested to return the same result, and those tests run on every commit.
+
+Performance is measured against the other engines available in R. The package's website includes a replication of the [duckspatial benchmark](https://cidree.github.io/duckspatial/articles/benchmark.html) to compare geoarrowrs, sedonadb, and duckspatial. In addition, there will be a geoarrowrs implementation of Apache Sedona [SpatialBench](https://github.com/apache/sedona-spatialbench) for a reference.
 
 ## Future work
 <!--
 How could this be extended / developed in the future by yourself
 and/or the community in general?
 -->
+
+This work, particularly the compatibility with {sf} will prove how to make the {sf} package truly agnostic to the geometry engine provided.
+The findings in this work will directly lead to potential completion and development of the [`{sdf}`](https://github.com/JosiahParry/sdf) R package.

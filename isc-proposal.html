@@ -2239,14 +2239,8 @@ are proposed.
 -->
 <section id="project-team" class="level2">
 <h2 class="anchored" data-anchor-id="project-team">Project team</h2>
-<!--
-Who are the people responsible for actually delivering the project if
-the proposal gets accepted and are already signed up and rearing to
-go? Briefly describe all participants and the skills they will bring
-to the project. Include public artifacts such as code repositories to
-show their tack record.
--->
-<p>Josiah Parry is a Sr. Product Engineer in Spatial Statistics as Esri.</p>
+<p><strong>Josiah Parry</strong> is a Sr. Product Engineer in Spatial Statistics as Esri where he creates and maintains the R-ArcGIS Bridge. He is also a maintainer of the extendr project for creating Rust-powered R packages.</p>
+<p>This proposal is done independently of my affiliation with Esri.</p>
 </section>
 <section id="contributors" class="level2">
 <h2 class="anchored" data-anchor-id="contributors">Contributors</h2>
@@ -2261,6 +2255,7 @@ won't necessarily be on the core project team later?
 Who has been given the opportunity to provide feedback on the
 proposal?
 -->
+<p>This proposal was discussed in brief on the <a href="https://geocompx.org/">geocompX</a> Discord with <a href="https://dewey.dunnington.ca/">Dewey Dunnington</a> and <a href="https://www.hypertidy.org/about">Michael Sumner</a>. Due to poor timing on my part neither have been provided with adequate time to review the proposal.</p>
 </section>
 </section>
 <section id="the-problem" class="level1">
@@ -2281,17 +2276,17 @@ It is important to cover:
 -->
 <section id="the-deserialization-problem" class="level2">
 <h2 class="anchored" data-anchor-id="the-deserialization-problem">The (de)serialization problem</h2>
-<p>While {sf} is a foundational package for the R ecosystem, its performance has failed to scale effectively as the size of data that people commonly work with has grown. This is a common experience. Users <a href="https://stackoverflow.com/questions/78009568/slow-performance-on-r-spatial-distance-calculation">report slow distance calculations on modest data</a>, <a href="https://jacobbradt.com/blog/2022/spatialbatch/">write their own batching workarounds to finish jobs at all</a>, and <a href="https://github.com/r-spatial/sf/issues/1925">performance</a> remains an open topic in {sf}’s own issue tracker.</p>
-<p><a href="https://cidree.github.io/duckspatial/articles/benchmark.html">duckspatial’s benchmark</a> indicates that it is roughly 50 times faster than {sf} on a spatial join. The <a href="https://josiahparry.github.io/geoarrowrs/articles/duckspatial.html">geoarrowrs replication</a> of the same benchmark finds that it is roughly 6 times faster than {duckspatial} on that operation.</p>
-<p>The biggest challenge with {sf} is primarily the fact that geometries are stored in R as a list. Each operation that {sf} performs has to be first converted to a GEOS or S2 geometry. The S2 or GEOS libraries perform operations on their native geometries and then {sf} captures their results and again converts them back to their R representation. This process of converting to and from is the expensive (de)serialization.</p>
+<p>While {sf} is a foundational package for the R ecosystem, its performance has failed to scale effectively as the size of data that people commonly work with has grown. This is a common experience. Users <a href="https://stackoverflow.com/questions/78009568/slow-performance-on-r-spatial-distance-calculation">report slow distance calculations on modest data</a>, <a href="https://jacobbradt.com/blog/2022/spatialbatch/">write their own parallel processing</a>, and <a href="https://github.com/r-spatial/sf/issues/1925">performance</a> remains an open topic in {sf}’s own issue tracker.</p>
+<p><a href="https://cidree.github.io/duckspatial/articles/benchmark.html">duckspatial’s benchmark</a> indicates that it is roughly 50 times faster than {sf} on a spatial join. The <a href="https://josiahparry.github.io/geoarrowrs/articles/duckspatial.html">geoarrowrs replication</a> of the same benchmark finds that it is roughly 6 times faster than {duckspatial}.</p>
+<p>The biggest challenge with {sf} is that geometries are stored in R as a list. For each operation, {sf} must convert to a GEOS or S2 geometry. The S2 or GEOS libraries perform operations on their native geometries and then {sf} again converts them back to their R representation. This process of converting to and from is the expensive (de)serialization.</p>
 <p>GeoArrow as a standard exists to address exactly this problem. It has been a focus of <a href="https://spatial-data-science.github.io/2024/">Spatial Data Science Across Languages</a> since its inception in 2024 and <a href="https://spatial-data-science.github.io/2025/">again in 2025</a>, and as a result we are seeing coordinated adoption across all languages. As an indicator of its importance, GDAL added a <a href="https://gdal.org/en/stable/development/rfc/rfc86_column_oriented_api.html">column-oriented Arrow API</a>. GeoPandas, too, added <a href="https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.to_arrow.html">native GeoArrow support</a>.</p>
 <p>At present, R support is limited. The R package <a href="https://github.com/geoarrow/geoarrow-r">{geoarrow}</a> provides a <a href="https://arrow.apache.org/nanoarrow/latest/r/">{nanoarrow}</a> and <a href="https://arrow.apache.org/docs/r/">{arrow}</a> compatible vector representation. The ISC-funded <a href="https://github.com/r-spatial/geoarrowWidget">{geoarrowWidget}</a> package assists in transporting {geoarrow} vectors to the browser. However, the R community lacks a GeoArrow-native compute engine that can scale effectively.</p>
 </section>
 <section id="alternative-computation-engines" class="level2">
 <h2 class="anchored" data-anchor-id="alternative-computation-engines">Alternative Computation Engines</h2>
-<p><a href="https://dewey.dunnington.ca/post/2022/geos-version-0.2/">{geos}</a> has historically been the fastest R package in the ecosystem but is very low level and thus not very widely used.</p>
-<p>Currently, there are two primary options for scalable geospatial computation engines in R: 1) <a href="https://cran.r-project.org/package=duckspatial">{duckspatial}</a> and 2) <a href="https://sedona.apache.org/sedonadb/latest/r/">{sedonadb}</a>. Neither works with native data.frames and both require external downloads.</p>
-<p>The duckspatial R package uses the <a href="https://duckdb.org/docs/stable/core_extensions/spatial/overview">spatial extension</a> to DuckDB, which must be downloaded and installed separately. On an M5 MacBook Pro that extension is 57mb. It also requires <a href="https://github.com/OSGeo/gdal/issues/10887">static linking</a>.</p>
+<p><a href="https://dewey.dunnington.ca/post/2022/geos-version-0.2/">{geos}</a> has historically been the fastest R package in the ecosystem but is low level and thus not very widely used.</p>
+<p>There are two primary options for scalable geospatial computation engines in R: 1) <a href="https://cran.r-project.org/package=duckspatial">{duckspatial}</a> and 2) <a href="https://sedona.apache.org/sedonadb/latest/r/">{sedonadb}</a> neither of which work natively on data.frames and require external downloads.</p>
+<p>The duckspatial R package uses the DuckDB <a href="https://duckdb.org/docs/stable/core_extensions/spatial/overview">spatial extension</a> which must be downloaded and installed separately. On an M5 MacBook Pro that extension is 57mb. It also requires <a href="https://github.com/OSGeo/gdal/issues/10887">static linking</a>.</p>
 <p>{sedonadb} provides bindings to <a href="https://sedona.apache.org/">Apache Sedona</a> and is arguably the most scalable of the options. The installation is 261mb. It is also not available on CRAN, lacks sufficient documentation, and has a bespoke API, all of which limit adoption.</p>
 <p>By comparison, {geoarrowrs} in its current state is a 14mb installation with no external downloads and no system dependencies. Even {sf}, which relies on GDAL, GEOS, and PROJ, is 88mb installed.</p>
 </section>

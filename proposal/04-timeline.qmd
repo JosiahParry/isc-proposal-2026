@@ -12,7 +12,9 @@ important because projects need to get up and running quickly.
  - [ ] Reporting framework
 -->
 
-
+{geoarrowrs} is already scaffolded and ready to continue development.
+The repository is configured under the MIT license, with continuous integration running.
+Work on the first milestone is ready to commence upon award.
 
 ## Technical delivery
 <!--
@@ -23,15 +25,8 @@ Including target dates is really important as you need to be committed
 and the ISC need to have a means of tracking delivery
 -->
 
-- Core Algorithm Implementation
-- Spatial Joins
-- Parallelization and optimization
-- {arrow} registered
+Upon award, a milestone tracker will be included in the project's README similar to the existing [README.md](https://github.com/JosiahParry/geoarrowrs/blob/main/src/rust/README.md) which tracks geo compatibility. This will be migrated to the root of the repo with a detailed list that is associated with each milestone.
 
-- pkgdown site
-- spatialbench benchmark
-- duckspatial benchmark
-- CRAN release
 
 ## Other aspects
 
@@ -49,9 +44,11 @@ to be shared quarterly on the R Consortium blog.
  - [ ] ISC meetings
 -->
 
-- i'd like to submit the package to rOpenSci or R-Spatial if they'd take it
-- Social media posts
-- Joint Blog post with R Consortium
+The package's website includes a replication of the [duckspatial benchmark](https://cidree.github.io/duckspatial/articles/benchmark.html) to compare geoarrowrs, sedonadb, and duckspatial. In addition, there will be a geoarrowrs implementation of Apache Sedona [SpatialBench](https://github.com/apache/sedona-spatialbench) for a reference.
+
+A formal CRAN release will indicate completion of the project followed by a join blog post with the R Consortium.
+
+Upon successful completion, the `mask_sf()` capability will inform completion and development of the [`{sdf}`](https://github.com/JosiahParry/sdf) R package which provides a geometry-agnostic interface. I will contact the R-spatial organization and ask if the package can be formally integrated into the ecosystem.
 
 ## Budget & funding plan
 
@@ -61,14 +58,13 @@ I request $5,000 USD to fund the development of {geoarrowrs}.
 
 This milestone funds the development effort to complete the core computation engine in {geoarrowrs} such that there is near-complete parity with {sf}. To accomplish the milestone, the following will be completed:
 
-- Geometry validation: `st_is_valid()`
 - Geometry reparation: `st_make_valid()`
 - Geometry type checking: `st_geometry_try()` and `st_is()`
 - Collection extraction: `st_collection_extract()`
 - Perimeter calculation: `st_permiter()`
 - Coordinate comparison: `st_equals_exact()`
 - Jittering: `st_jitter()`
-- Node: `st_reverse()`, `st_node()`
+- Winding: `st_reverse()`
 - Areal interpolation: `st_interpolate_aw()
 - Bounding box: `st_bbox()`
 - Polygon constructors:
@@ -80,13 +76,17 @@ The following features are out of scope of this proposal as there are no pure ru
 - Polygonization
 - Geometry Projection
 
+Completion is expected within 2 months of the award date.
+
 ### Milestone 2 - Persistent Spatial Indexes and Spatial Sorting ($1,000)
 
 This milestone funds the development of creating and persisting spatial RTree and KDTree spatial indexes. These spatial indexes are created on the fly for each operation performed by {sf} as well as other libraries. For operations that require repeated look ups, persisting the index can be highly efficient.
 
 Further, these indexes can be used to perform sorting of geometries to ensure that nearby geometries are orded together. Spatial sorting can greatly improve the effectiveness of row group statistics in GeoParquet files. Partial reads of a GeoParquet file can leverage the sorting more effectively.
 
-For spatial sorting, Hilbert and sort-tile-recursive (STR) will both be supported. {geos} only provides STR sorting and spatial RTrees, to my knowledge, do not have support in the R ecosystem.
+For spatial sorting, Hilbert and sort-tile-recursive (STR) will both be supported. {geos} provides an STR tree, but it cannot be persisted to disk or used to sort geometries, and no other R package, to my knowledge, provides either capability.
+
+Completion is expected within 3 months of the award date.
 
 ### Milestone 3 - {sf} Compatibility and CRAN release ($1,500)
 
@@ -96,30 +96,34 @@ Following, documentation, examples, and benchmarks will be tidied up, and rewrit
 
 One **risk** is that the source tarball is 14mb which is 9mb larger than the requested CRAN limit. However, exceptions can be made. For example, the prior art {rsgeo} was a [9mb tarball](https://cran.r-project.org/src/contrib/Archive/rsgeo/). And other Rust based R packages such as {fcl}, are [15mb](https://cran.r-project.org/src/contrib/Archive/fcl/) and supported on CRAN.
 
-One **limitation** is that the `geo` crate that we rely on geometry operations does not have full spherical support whereas {sf} does via the {s2} package. In the event that a spherical CRS is used
+One **limitation** is that the `geo` crate that we rely on geometry operations does not have full spherical support whereas {sf} does via the {s2} package. In the event that a spherical CRS is used, geodesic algorithms will be used wherever possible. Otherwise, an error will be raised. {geoarrowrs} will not silently return a planar result for geographic coordinates—an issue [documented with painstaking detail](https://www.hypertidy.org/posts/2026-09-23_measures-sf-terra/).
 
-### Milestone 4 - GeoArrow and GeoParquet metadata
+Completion is expected within 5 months of the award date.
+
+### Milestone 4 - GeoArrow and GeoParquet metadata ($1,000)
 
 At present, geoarrowrs cannot propogate a coordinate reference system (CRS) across the R to Rust FFI boundary.
-Milestone 3 is possible by leaning on {sf}'s CRS object and adding is as an attribute on the geoarrow vectors which requires PROJ to be installed.
+Milestone 3 is possible by leaning on {sf}'s CRS object and adding it as an attribute on the geoarrow vectors which requires PROJ to be installed.
 This milestone would ensure that no external system dependencies would be needed.
 
 Further, the GeoArrow specification records CRS as column level metadata in the projjson format.
-To support this, the [`projjson-rs`](https://github.com/JosiahParry/projjson-rs/tree/main) crate was created which provides strongly typed reading and writing of `projjson` with no external system dependencies.
+To support this, the [`projjson-rs`](https://github.com/JosiahParry/projjson-rs/tree/main) crate was created which provides strongly typed reading and writing of `projjson` with no external system dependencies. As a result, GeoArrow transferred from DuckDB, R, Python, and GDAL would propagate the CRS correctly.
 
-As a result, GeoArrow transferred from DuckDB, R, Python, and GDAL would propagate the CRS correctly.
-
-The column level metadata is also utilized by GeoParquet. As such, this milestone completely implements the GeoParquet column metadata including:
+The column level metadata is also utilized by GeoParquet. As such, this milestone completely implements the GeoParquet 1.1 column metadata including:
 
 - encoding
 - geometry_types
 - crs
 - bbox
+- covering
 - orientation
 - edges
 - epoch
 
-Notably, the `edges` indicates wh
+Of these, `covering` matters most. It records a bounding box column whose Parquet statistics allow a reader to skip row groups that cannot satisfy a spatial query, which, paired with the spatial sorting from Milestone 2, is what makes partial reads of a GeoParquet file effective.
+
+
+Completion is expected within 6 months of the award date.
 
 
 <!--

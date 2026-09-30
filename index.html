@@ -2423,6 +2423,7 @@ important because projects need to get up and running quickly.
  - [ ] License decisions
  - [ ] Reporting framework
 -->
+<p>{geoarrowrs} is already scaffolded and ready to continue development. The repository is configured under the MIT license, with continuous integration running. Work on the first milestone is ready to commence upon award.</p>
 </section>
 <section id="technical-delivery" class="level2">
 <h2 class="anchored" data-anchor-id="technical-delivery">Technical delivery</h2>
@@ -2433,16 +2434,7 @@ provide at least a high-level description of the implementation.
 Including target dates is really important as you need to be committed
 and the ISC need to have a means of tracking delivery
 -->
-<ul>
-<li><p>Core Algorithm Implementation</p></li>
-<li><p>Spatial Joins</p></li>
-<li><p>Parallelization and optimization</p></li>
-<li><p>{arrow} registered</p></li>
-<li><p>pkgdown site</p></li>
-<li><p>spatialbench benchmark</p></li>
-<li><p>duckspatial benchmark</p></li>
-<li><p>CRAN release</p></li>
-</ul>
+<p>Upon award, a milestone tracker will be included in the project’s README similar to the existing <a href="https://github.com/JosiahParry/geoarrowrs/blob/main/src/rust/README.md">README.md</a> which tracks geo compatibility. This will be migrated to the root of the repo with a detailed list that is associated with each milestone.</p>
 </section>
 <section id="other-aspects" class="level2">
 <h2 class="anchored" data-anchor-id="other-aspects">Other aspects</h2>
@@ -2459,11 +2451,9 @@ to be shared quarterly on the R Consortium blog.
  - [ ] UseR!
  - [ ] ISC meetings
 -->
-<ul>
-<li>i’d like to submit the package to rOpenSci or R-Spatial if they’d take it</li>
-<li>Social media posts</li>
-<li>Joint Blog post with R Consortium</li>
-</ul>
+<p>The package’s website includes a replication of the <a href="https://cidree.github.io/duckspatial/articles/benchmark.html">duckspatial benchmark</a> to compare geoarrowrs, sedonadb, and duckspatial. In addition, there will be a geoarrowrs implementation of Apache Sedona <a href="https://github.com/apache/sedona-spatialbench">SpatialBench</a> for a reference.</p>
+<p>A formal CRAN release will indicate completion of the project followed by a join blog post with the R Consortium.</p>
+<p>Upon successful completion, the <code>mask_sf()</code> capability will inform completion and development of the <a href="https://github.com/JosiahParry/sdf"><code>{sdf}</code></a> R package which provides a geometry-agnostic interface. I will contact the R-spatial organization and ask if the package can be formally integrated into the ecosystem.</p>
 </section>
 <section id="budget-funding-plan" class="level2">
 <h2 class="anchored" data-anchor-id="budget-funding-plan">Budget &amp; funding plan</h2>
@@ -2472,14 +2462,13 @@ to be shared quarterly on the R Consortium blog.
 <h3 class="anchored" data-anchor-id="milestone-1---complete-core-geometry-engine-implementation-1500">Milestone 1 - Complete Core Geometry Engine Implementation ($1,500)</h3>
 <p>This milestone funds the development effort to complete the core computation engine in {geoarrowrs} such that there is near-complete parity with {sf}. To accomplish the milestone, the following will be completed:</p>
 <ul>
-<li>Geometry validation: <code>st_is_valid()</code></li>
 <li>Geometry reparation: <code>st_make_valid()</code></li>
 <li>Geometry type checking: <code>st_geometry_try()</code> and <code>st_is()</code></li>
 <li>Collection extraction: <code>st_collection_extract()</code></li>
 <li>Perimeter calculation: <code>st_permiter()</code></li>
 <li>Coordinate comparison: <code>st_equals_exact()</code></li>
 <li>Jittering: <code>st_jitter()</code></li>
-<li>Node: <code>st_reverse()</code>, <code>st_node()</code></li>
+<li>Winding: <code>st_reverse()</code></li>
 <li>Areal interpolation: `st_interpolate_aw()</li>
 <li>Bounding box: <code>st_bbox()</code></li>
 <li>Polygon constructors:</li>
@@ -2491,36 +2480,40 @@ to be shared quarterly on the R Consortium blog.
 <li>Polygonization</li>
 <li>Geometry Projection</li>
 </ul>
+<p>Completion is expected within 2 months of the award date.</p>
 </section>
 <section id="milestone-2---persistent-spatial-indexes-and-spatial-sorting-1000" class="level3">
 <h3 class="anchored" data-anchor-id="milestone-2---persistent-spatial-indexes-and-spatial-sorting-1000">Milestone 2 - Persistent Spatial Indexes and Spatial Sorting ($1,000)</h3>
 <p>This milestone funds the development of creating and persisting spatial RTree and KDTree spatial indexes. These spatial indexes are created on the fly for each operation performed by {sf} as well as other libraries. For operations that require repeated look ups, persisting the index can be highly efficient.</p>
 <p>Further, these indexes can be used to perform sorting of geometries to ensure that nearby geometries are orded together. Spatial sorting can greatly improve the effectiveness of row group statistics in GeoParquet files. Partial reads of a GeoParquet file can leverage the sorting more effectively.</p>
-<p>For spatial sorting, Hilbert and sort-tile-recursive (STR) will both be supported. {geos} only provides STR sorting and spatial RTrees, to my knowledge, do not have support in the R ecosystem.</p>
+<p>For spatial sorting, Hilbert and sort-tile-recursive (STR) will both be supported. {geos} provides an STR tree, but it cannot be persisted to disk or used to sort geometries, and no other R package, to my knowledge, provides either capability.</p>
+<p>Completion is expected within 3 months of the award date.</p>
 </section>
 <section id="milestone-3---sf-compatibility-and-cran-release-1500" class="level3">
 <h3 class="anchored" data-anchor-id="milestone-3---sf-compatibility-and-cran-release-1500">Milestone 3 - {sf} Compatibility and CRAN release ($1,500)</h3>
 <p>In order for the package to be useful to the broadest community, this milestone will create drop in support for {sf} via S3 namespace masking. Users can call <code>mask_sf()</code> to overload the {sf} namespace with generics that enable {sf} to work with {geoarrowrs} geometries.</p>
 <p>Following, documentation, examples, and benchmarks will be tidied up, and rewritten for ease of adoption.</p>
 <p>One <strong>risk</strong> is that the source tarball is 14mb which is 9mb larger than the requested CRAN limit. However, exceptions can be made. For example, the prior art {rsgeo} was a <a href="https://cran.r-project.org/src/contrib/Archive/rsgeo/">9mb tarball</a>. And other Rust based R packages such as {fcl}, are <a href="https://cran.r-project.org/src/contrib/Archive/fcl/">15mb</a> and supported on CRAN.</p>
-<p>One <strong>limitation</strong> is that the <code>geo</code> crate that we rely on geometry operations does not have full spherical support whereas {sf} does via the {s2} package. In the event that a spherical CRS is used</p>
+<p>One <strong>limitation</strong> is that the <code>geo</code> crate that we rely on geometry operations does not have full spherical support whereas {sf} does via the {s2} package. In the event that a spherical CRS is used, geodesic algorithms will be used wherever possible. Otherwise, an error will be raised. {geoarrowrs} will not silently return a planar result for geographic coordinates—an issue <a href="https://www.hypertidy.org/posts/2026-09-23_measures-sf-terra/">documented with painstaking detail</a>.</p>
+<p>Completion is expected within 5 months of the award date.</p>
 </section>
-<section id="milestone-4---geoarrow-and-geoparquet-metadata" class="level3">
-<h3 class="anchored" data-anchor-id="milestone-4---geoarrow-and-geoparquet-metadata">Milestone 4 - GeoArrow and GeoParquet metadata</h3>
-<p>At present, geoarrowrs cannot propogate a coordinate reference system (CRS) across the R to Rust FFI boundary. Milestone 3 is possible by leaning on {sf}’s CRS object and adding is as an attribute on the geoarrow vectors which requires PROJ to be installed. This milestone would ensure that no external system dependencies would be needed.</p>
-<p>Further, the GeoArrow specification records CRS as column level metadata in the projjson format. To support this, the <a href="https://github.com/JosiahParry/projjson-rs/tree/main"><code>projjson-rs</code></a> crate was created which provides strongly typed reading and writing of <code>projjson</code> with no external system dependencies.</p>
-<p>As a result, GeoArrow transferred from DuckDB, R, Python, and GDAL would propagate the CRS correctly.</p>
-<p>The column level metadata is also utilized by GeoParquet. As such, this milestone completely implements the GeoParquet column metadata including:</p>
+<section id="milestone-4---geoarrow-and-geoparquet-metadata-1000" class="level3">
+<h3 class="anchored" data-anchor-id="milestone-4---geoarrow-and-geoparquet-metadata-1000">Milestone 4 - GeoArrow and GeoParquet metadata ($1,000)</h3>
+<p>At present, geoarrowrs cannot propogate a coordinate reference system (CRS) across the R to Rust FFI boundary. Milestone 3 is possible by leaning on {sf}’s CRS object and adding it as an attribute on the geoarrow vectors which requires PROJ to be installed. This milestone would ensure that no external system dependencies would be needed.</p>
+<p>Further, the GeoArrow specification records CRS as column level metadata in the projjson format. To support this, the <a href="https://github.com/JosiahParry/projjson-rs/tree/main"><code>projjson-rs</code></a> crate was created which provides strongly typed reading and writing of <code>projjson</code> with no external system dependencies. As a result, GeoArrow transferred from DuckDB, R, Python, and GDAL would propagate the CRS correctly.</p>
+<p>The column level metadata is also utilized by GeoParquet. As such, this milestone completely implements the GeoParquet 1.1 column metadata including:</p>
 <ul>
 <li>encoding</li>
 <li>geometry_types</li>
 <li>crs</li>
 <li>bbox</li>
+<li>covering</li>
 <li>orientation</li>
 <li>edges</li>
 <li>epoch</li>
 </ul>
-<p>Notably, the <code>edges</code> indicates wh</p>
+<p>Of these, <code>covering</code> matters most. It records a bounding box column whose Parquet statistics allow a reader to skip row groups that cannot satisfy a spatial query, which, paired with the spatial sorting from Milestone 2, is what makes partial reads of a GeoParquet file effective.</p>
+<p>Completion is expected within 6 months of the award date.</p>
 <!--
 Note that the maximum grant is $10k USD. The proposal should be in USD.
 

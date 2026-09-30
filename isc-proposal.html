@@ -2451,7 +2451,6 @@ to be shared quarterly on the R Consortium blog.
  - [ ] UseR!
  - [ ] ISC meetings
 -->
-<p>The package’s website includes a replication of the <a href="https://cidree.github.io/duckspatial/articles/benchmark.html">duckspatial benchmark</a> to compare geoarrowrs, sedonadb, and duckspatial. In addition, there will be a geoarrowrs implementation of Apache Sedona <a href="https://github.com/apache/sedona-spatialbench">SpatialBench</a> for a reference.</p>
 <p>A formal CRAN release will indicate completion of the project followed by a join blog post with the R Consortium.</p>
 <p>Upon successful completion, the <code>mask_sf()</code> capability will inform completion and development of the <a href="https://github.com/JosiahParry/sdf"><code>{sdf}</code></a> R package which provides a geometry-agnostic interface. I will contact the R-spatial organization and ask if the package can be formally integrated into the ecosystem.</p>
 </section>
@@ -2546,6 +2545,7 @@ thorough understanding going in of what the risks are to delivery
 <!--
 What does success look like?
 -->
+<p>All four milestones are completed, package published on CRAN, and the joint blog post with the R Consortium is published.</p>
 </section>
 <section id="measuring-success" class="level2">
 <h2 class="anchored" data-anchor-id="measuring-success">Measuring success</h2>
@@ -2553,7 +2553,8 @@ What does success look like?
 How will we know when success is achieved, what markers can we use
 along the way
 -->
-<p>Correctness tests with sf</p>
+<p>Correctness is measured against {sf}. Every operation shared with {sf} is tested to return the same result, and those tests run on every commit.</p>
+<p>Performance is measured against the other engines available in R. The package’s website includes a replication of the <a href="https://cidree.github.io/duckspatial/articles/benchmark.html">duckspatial benchmark</a> to compare geoarrowrs, sedonadb, and duckspatial. In addition, there will be a geoarrowrs implementation of Apache Sedona <a href="https://github.com/apache/sedona-spatialbench">SpatialBench</a> for a reference.</p>
 </section>
 <section id="future-work" class="level2">
 <h2 class="anchored" data-anchor-id="future-work">Future work</h2>
@@ -2561,6 +2562,7 @@ along the way
 How could this be extended / developed in the future by yourself
 and/or the community in general?
 -->
+<p>This work, particularly the compatibility with {sf} will prove how to make the {sf} package truly agnostic to the geometry engine provided. The findings in this work will directly lead to potential completion and development of the <a href="https://github.com/JosiahParry/sdf"><code>{sdf}</code></a> R package.</p>
 <div class="refs">
 
 </div>
